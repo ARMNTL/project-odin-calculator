@@ -1,3 +1,10 @@
+# Project Odin Calculator
+
+## Steps I made
+
+1. Making the calculator skeleton on html. By the way, it's inpired by Microsoft Windows 11 Calculator in **Keep on top** mode.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -47,3 +54,4 @@
         </div>
     </body>
 </html>
+```
