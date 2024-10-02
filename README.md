@@ -1,5 +1,10 @@
 # Project Odin Calculator
 
+## Questions I made during development
+
+-   Can I do this without using global variables?
+-   How can I insert unicode characters? The true minus sign. (Unicode 2212)
+
 ## Steps I made
 
 1. Making the calculator skeleton on html. By the way, it's inpired by Microsoft Windows 11 Calculator in **Keep on top** mode.
@@ -54,7 +59,7 @@
 </html>
 ```
 
-2. Some CSS to make it look better.
+2. Some CSS to make it look better. For the colors, I used the **VS Color Picker** extension.
 
 ```css
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
@@ -89,8 +94,6 @@ body {
 }
 
 .display {
-    /* border: 1px solid pink; */
-
     display: flex;
     justify-content: end;
     align-items: end;
@@ -101,8 +104,6 @@ body {
 }
 
 .container-buttons {
-    /* border: 1px solid blue; */
-
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -110,8 +111,6 @@ body {
 }
 
 .buttons-row {
-    /* border: 1px solid brown; */
-
     display: flex;
     justify-content: center;
     align-items: stretch;
@@ -120,8 +119,6 @@ body {
 }
 
 button {
-    /* min-width: 50px; */
-    /* min-height: 50px; */
     background-color: #f6f6f6;
     border-radius: 4px;
     flex: 1;
@@ -138,5 +135,161 @@ button:hover {
 
 .button-equals:hover {
     background-color: #3082ca;
+}
+```
+
+3. Let's test the display.
+
+```js
+const display = document.querySelector(".display");
+display.textContent = "Testing 123";
+```
+
+4. Adding event listeners for all buttons.
+
+```js
+const buttons = document.querySelectorAll("button");
+
+buttons.forEach((button) =>
+    button.addEventListener("click", handleAllButtonsClick)
+);
+
+function handleAllButtonsClick(e) {
+    console.log(`${e.target.textContent} got clicked!`);
+}
+```
+
+5. Handle number button clicks.
+
+```js
+function handleAllButtonsClick(e) {
+    // console.log(`${e.target.textContent} got clicked!`);
+
+    switch (e.target.textContent) {
+        case "0":
+            if (display.textContent === "0") break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            console.log(`${e.target.textContent} clicked`);
+            break;
+        default:
+            break;
+    }
+}
+```
+
+6. Declare global variables. (On top of the code)
+
+```js
+// global variables
+let gDisplayText = "";
+let gFirstInputText = "";
+let gSecondInputText = "";
+let gOperationInputText = "";
+```
+
+7. Handle number buttons to get the first number.
+
+```js
+function processNumbersButtonClick(buttonTextContext) {
+    if (gOperationInputText === "") {
+        gFirstInputText += buttonTextContext;
+    }
+    gDisplayText = gFirstInputText;
+    updateDisplay();
+}
+
+function updateDisplay() {
+    display.textContent = gDisplayText;
+}
+
+function handleAllButtonsClick(e) {
+    // console.log(`${e.target.textContent} got clicked!`);
+
+    switch (e.target.textContent) {
+        case "0":
+            if (display.textContent === "0") break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            console.log(`${e.target.textContent} clicked`);
+            processNumbersButtonClick(e.target.textContent);
+            break;
+        default:
+            break;
+    }
+}
+```
+
+8. Handle operation buttons. I changed the minus symbol to alt + 0151; the multiplication symbol to alt + 0215; and division symbol to alt + 0247.
+
+```js
+function processOperationButtonClick(buttonTextContext) {
+    if (gFirstInputText === "") {
+        return;
+    }
+
+    gOperationInputText = buttonTextContext;
+    gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+    updateDisplay();
+}
+
+function handleAllButtonsClick(e) {
+    // console.log(`${e.target.textContent} got clicked!`);
+
+    switch (e.target.textContent) {
+        case "0":
+            if (display.textContent === "0") break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            console.log(`${e.target.textContent} clicked`);
+            processNumbersButtonClick(e.target.textContent);
+            break;
+        case "+":
+        case "–":
+        case "×":
+        case "÷":
+            console.log(`${e.target.textContent} clicked`);
+            processOperationButtonClick(e.target.textContent);
+            break;
+        default:
+            break;
+    }
+}
+```
+
+9. Get the second number.
+
+```js
+function processNumbersButtonClick(buttonTextContext) {
+    if (gOperationInputText === "") {
+        gFirstInputText += buttonTextContext;
+        gDisplayText = gFirstInputText;
+    } else if (gOperationInputText !== "") {
+        gSecondInputText += buttonTextContext;
+        gDisplayText += buttonTextContext;
+    }
+
+    updateDisplay();
 }
 ```

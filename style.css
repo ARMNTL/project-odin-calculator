@@ -37,7 +37,7 @@ body {
     align-items: end;
     min-width: 212px;
     min-height: 50px;
-    font-size: 1.5em;
+    font-size: 2em;
     flex: 1 auto;
 }
 
@@ -46,7 +46,7 @@ body {
 
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     flex: 1 auto
 }
 
@@ -56,13 +56,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 4px;
+    gap: 2px;
     flex: 1 auto;
 }
 
 button {
     /* min-width: 50px; */
     /* min-height: 50px; */
+    font-size: 1.5em;
     background-color: #f6f6f6;
     border-radius: 4px;
     flex: 1;
