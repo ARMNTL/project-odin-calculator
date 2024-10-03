@@ -41,9 +41,40 @@ function updateDisplay() {
     display.textContent = gDisplayText;
 }
 
+function processComputeButtonClick() {
+    if (!gFirstInputText || !gOperationInputText || !gSecondInputText) {
+        // console.log("Not possible");
+        return;
+    }
+
+    // only integers for now
+    const a = parseInt(gFirstInputText);
+    const b = parseInt(gSecondInputText);
+
+    switch (gOperationInputText) {
+        case "+":
+            gDisplayText = (a + b).toString();
+            updateDisplay();
+            break;
+        case "–":
+            gDisplayText = (a - b).toString();
+            updateDisplay();
+            break;
+        case "×":
+            gDisplayText = (a * b).toString();
+            updateDisplay();
+            break;
+        case "÷":
+            gDisplayText = (a / b).toString();
+            updateDisplay();
+            break;
+        default:
+            break;
+    }
+}
+
 function handleAllButtonsClick(e) {
     // console.log(`${e.target.textContent} got clicked!`);
-
     switch (e.target.textContent) {
         case "0":
             if (display.textContent === "0") break;
@@ -56,15 +87,18 @@ function handleAllButtonsClick(e) {
         case "7":
         case "8":
         case "9":
-            console.log(`${e.target.textContent} clicked`);
+            // console.log(`${e.target.textContent} clicked`);
             processNumbersButtonClick(e.target.textContent);
             break;
         case "+":
         case "–":
         case "×":
         case "÷":
-            console.log(`${e.target.textContent} clicked`);
+            // console.log(`${e.target.textContent} clicked`);
             processOperationButtonClick(e.target.textContent);
+            break;
+        case "=":
+            processComputeButtonClick();
             break;
         default:
             break;

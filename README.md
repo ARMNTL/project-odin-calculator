@@ -293,3 +293,39 @@ function processNumbersButtonClick(buttonTextContext) {
     updateDisplay();
 }
 ```
+
+10. Let's get the equal button to work!
+
+```js
+function processComputeButtonClick() {
+    if (!gFirstInputText || !gOperationInputText || !gSecondInputText) {
+        // console.log("Not possible");
+        return;
+    }
+
+    // only integers for now
+    const a = parseInt(gFirstInputText);
+    const b = parseInt(gSecondInputText);
+
+    switch (gOperationInputText) {
+        case "+":
+            gDisplayText = (a + b).toString();
+            updateDisplay();
+            break;
+        case "–":
+            gDisplayText = (a - b).toString();
+            updateDisplay();
+            break;
+        case "×":
+            gDisplayText = (a * b).toString();
+            updateDisplay();
+            break;
+        case "÷":
+            gDisplayText = (a / b).toString();
+            updateDisplay();
+            break;
+        default:
+            break;
+    }
+}
+```
