@@ -4,6 +4,8 @@ let gFirstInputText = "";
 let gSecondInputText = "";
 let gOperationInputText = "";
 let gLastResult = "";
+let gLastSecondInputText = "";
+let gLastOperationInputText = "";
 
 // display
 const display = document.querySelector(".display");
@@ -16,6 +18,27 @@ buttons.forEach((button) =>
     button.addEventListener("click", handleAllButtonsClick)
 );
 
+function updateDisplay() {
+    console.log(
+        gFirstInputText,
+        gOperationInputText,
+        gSecondInputText,
+        gLastResult
+    );
+
+    // if (gFirstInputText.includes(".")) {
+    //     let splitted = gFirstInputText.split(".");
+    //     console.log(splitted);
+    //     if (splitted[1].length >= 2) {
+    //         splitted[1] = splitted[1].slice(0, 2);
+    //         gFirstInputText = splitted.join(".");
+    //         gDisplayText = gFirstInputText;
+    //     }
+    // }
+
+    display.textContent = gDisplayText;
+}
+
 function inputNumber(buttonTextContext) {
     // get the first number if no operand
     if (gOperationInputText === "") {
@@ -26,10 +49,16 @@ function inputNumber(buttonTextContext) {
             } else if (!gFirstInputText.includes(".")) {
                 gFirstInputText += ".";
             }
-            gDisplayText += gFirstInputText;
             // non-period
         } else {
-            gFirstInputText += buttonTextContext;
+            // tricky nested if statement to limit 2 digits
+            if (gFirstInputText.includes(".")) {
+                if (gFirstInputText.split(".")[1].length < 2) {
+                    gFirstInputText += buttonTextContext;
+                }
+            } else {
+                gFirstInputText += buttonTextContext;
+            }
         }
         gDisplayText = gFirstInputText;
         // get the second number if there's an operand
@@ -43,7 +72,14 @@ function inputNumber(buttonTextContext) {
             }
             // non-period
         } else {
-            gSecondInputText += buttonTextContext;
+            // tricky same as above
+            if (gSecondInputText.includes(".")) {
+                if (gSecondInputText.split(".")[1].length < 2) {
+                    gSecondInputText += buttonTextContext;
+                }
+            } else {
+                gSecondInputText += buttonTextContext;
+            }
         }
         gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
     }
@@ -51,6 +87,8 @@ function inputNumber(buttonTextContext) {
 }
 
 function inputOperation(buttonTextContext) {
+    gLastSecondInputText = "";
+    gLastOperationInputText = "";
     // right after =
     if (
         gLastResult !== "" &&
@@ -76,21 +114,13 @@ function inputOperation(buttonTextContext) {
     updateDisplay();
 }
 
-function updateDisplay() {
-    console.log(
-        gFirstInputText,
-        gOperationInputText,
-        gSecondInputText,
-        gLastResult
-    );
-    display.textContent = gDisplayText;
-}
-
 function clearAll() {
     gFirstInputText = "";
     gSecondInputText = "";
     gOperationInputText = "";
     gLastResult = "";
+    gLastSecondInputText = "";
+    gLastOperationInputText = "";
     gDisplayText = "";
     display.textContent = "0";
 }
@@ -129,8 +159,7 @@ function negateNumber() {
         // result
     } else if (gFirstInputText === "" && gLastResult !== "") {
         gLastResult = negate(gLastResult);
-        gDisplayText = gLastResult;
-        updateDisplay();
+        display.textContent = gLastResult;
     }
 }
 
@@ -162,39 +191,63 @@ function backSpace() {
 }
 
 function operate() {
+    if (gLastOperationInputText !== "" && gLastSecondInputText !== "") {
+        gFirstInputText = gLastResult;
+        gSecondInputText = gLastSecondInputText;
+        gOperationInputText = gLastOperationInputText;
+    }
+
     if (!gFirstInputText || !gOperationInputText || !gSecondInputText) {
         return;
     }
 
-    // only integers for now
-    const a = parseInt(gFirstInputText);
-    const b = parseInt(gSecondInputText);
+    const trimTrailingZeros = (text) => {
+        if (text[text.length - 1] === "0") {
+            text = text.slice(0, text.length - 1);
+        }
+        if (text[text.length - 1] === "0") {
+            text = text.slice(0, text.length - 1);
+        }
+        if (text[text.length - 1] === ".") {
+            text = text.slice(0, text.length - 1);
+        }
+        return text;
+    };
+
+    const a = parseFloat(gFirstInputText);
+    const b = parseFloat(gSecondInputText);
 
     switch (gOperationInputText) {
         case "+":
-            gLastResult = (a + b).toString();
+            gLastResult = trimTrailingZeros((a + b).toFixed(2).toString());
             gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "–":
-            gLastResult = (a - b).toString();
+            gLastResult = trimTrailingZeros((a - b).toFixed(2).toString());
             gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "×":
-            gLastResult = (a * b).toString();
+            gLastResult = trimTrailingZeros((a * b).toFixed(2).toString());
             gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "÷":
-            gLastResult = (a / b).toString();
-            gDisplayText = gLastResult;
+            if (b === 0.0) {
+                gDisplayText = "error / 0";
+            } else {
+                gLastResult = trimTrailingZeros((a / b).toFixed(2).toString());
+                gDisplayText = gLastResult;
+            }
             updateDisplay();
             break;
         default:
             break;
     }
 
+    gLastSecondInputText = gSecondInputText;
+    gLastOperationInputText = gOperationInputText;
     gFirstInputText = "";
     gSecondInputText = "";
     gOperationInputText = "";
