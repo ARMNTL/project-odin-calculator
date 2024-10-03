@@ -31,7 +31,11 @@ function processNumbersButtonClick(buttonTextContext) {
 
 function processOperationButtonClick(buttonTextContext) {
     // right after =
-    if (gLastResult !== "") {
+    if (
+        gLastResult !== "" &&
+        gSecondInputText === "" &&
+        gFirstInputText === ""
+    ) {
         gFirstInputText = gLastResult;
     }
 
@@ -42,7 +46,7 @@ function processOperationButtonClick(buttonTextContext) {
 
     // clicking an operation instead of =
     if (gFirstInputText !== "" && gSecondInputText !== "") {
-        processComputeButtonClick();
+        operate();
         gFirstInputText = gLastResult;
     }
 
@@ -70,7 +74,17 @@ function clearAll() {
     display.textContent = "0";
 }
 
-function processComputeButtonClick() {
+function clearEntry() {
+    if (gOperationInputText !== "") {
+        gSecondInputText = "";
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+        updateDisplay();
+    } else {
+        clearAll();
+    }
+}
+
+function operate() {
     if (!gFirstInputText || !gOperationInputText || !gSecondInputText) {
         // console.log("Not possible");
         return;
@@ -136,11 +150,13 @@ function handleAllButtonsClick(e) {
             processOperationButtonClick(e.target.textContent);
             break;
         case "=":
-            processComputeButtonClick();
+            operate();
             break;
         case "C":
             clearAll();
             break;
+        case "CE":
+            clearEntry();
         default:
             break;
     }

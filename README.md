@@ -398,3 +398,17 @@ function clearAll() {
     display.textContent = "0";
 }
 ```
+
+15. Also the CE (clear entry?) button.
+
+```js
+function clearEntry() {
+    if (gOperationInputText !== "") {
+        gSecondInputText = "";
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+        updateDisplay();
+    } else {
+        clearAll();
+    }
+}
+```
