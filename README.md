@@ -445,3 +445,34 @@ function negateNumber() {
     }
 }
 ```
+
+17. The back (backspace / erase) button seems similar to the negate function.
+
+```js
+function backSpace() {
+    // first number
+    if (
+        gFirstInputText !== "" &&
+        gOperationInputText === "" &&
+        gSecondInputText === ""
+    ) {
+        gFirstInputText = gFirstInputText.slice(0, -1);
+        gDisplayText = gFirstInputText === "" ? "0" : gFirstInputText;
+        updateDisplay();
+        // second number
+    } else if (
+        gFirstInputText !== "" &&
+        gOperationInputText !== "" &&
+        gSecondInputText !== ""
+    ) {
+        gSecondInputText = gSecondInputText.slice(0, -1);
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        updateDisplay();
+        // result
+    } else if (gFirstInputText === "" && gLastResult !== "") {
+        gLastResult = gLastResult.slice(0, -1);
+        gDisplayText = gLastResult === "" ? "0" : gLastResult;
+        updateDisplay();
+    }
+}
+```
