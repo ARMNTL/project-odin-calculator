@@ -16,7 +16,7 @@ buttons.forEach((button) =>
     button.addEventListener("click", handleAllButtonsClick)
 );
 
-function processNumbersButtonClick(buttonTextContext) {
+function inputNumber(buttonTextContext) {
     // get the first number
     if (gOperationInputText === "") {
         gFirstInputText += buttonTextContext;
@@ -29,7 +29,7 @@ function processNumbersButtonClick(buttonTextContext) {
     updateDisplay();
 }
 
-function processOperationButtonClick(buttonTextContext) {
+function inputOperation(buttonTextContext) {
     // right after =
     if (
         gLastResult !== "" &&
@@ -81,6 +81,35 @@ function clearEntry() {
         updateDisplay();
     } else {
         clearAll();
+    }
+}
+
+function negateNumber() {
+    const negate = (text) => (text[0] === "-" ? text.slice(1) : `-${text}`);
+
+    // first number
+    if (
+        gFirstInputText !== "" &&
+        gOperationInputText === "" &&
+        gSecondInputText === ""
+    ) {
+        gFirstInputText = negate(gFirstInputText);
+        gDisplayText = gFirstInputText;
+        updateDisplay();
+        // second number
+    } else if (
+        gFirstInputText !== "" &&
+        gOperationInputText !== "" &&
+        gSecondInputText !== ""
+    ) {
+        gSecondInputText = negate(gSecondInputText);
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        updateDisplay();
+        // result
+    } else if (gFirstInputText === "" && gLastResult !== "") {
+        gLastResult = negate(gLastResult);
+        gDisplayText = gLastResult;
+        updateDisplay();
     }
 }
 
@@ -140,14 +169,14 @@ function handleAllButtonsClick(e) {
         case "8":
         case "9":
             // console.log(`${e.target.textContent} clicked`);
-            processNumbersButtonClick(e.target.textContent);
+            inputNumber(e.target.textContent);
             break;
         case "+":
         case "–":
         case "×":
         case "÷":
             // console.log(`${e.target.textContent} clicked`);
-            processOperationButtonClick(e.target.textContent);
+            inputOperation(e.target.textContent);
             break;
         case "=":
             operate();
@@ -157,6 +186,10 @@ function handleAllButtonsClick(e) {
             break;
         case "CE":
             clearEntry();
+            break;
+        case "±":
+            negateNumber();
+            break;
         default:
             break;
     }

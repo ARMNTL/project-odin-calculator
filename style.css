@@ -25,8 +25,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
-    min-width: 40%;
-    min-height: 60%;
+    min-width: 20%;
+    min-height: 50%;
 }
 
 .display {

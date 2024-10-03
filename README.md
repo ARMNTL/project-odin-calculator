@@ -412,3 +412,36 @@ function clearEntry() {
     }
 }
 ```
+
+16. The negate button looks easy to code. Not quite.
+
+```js
+function negateNumber() {
+    const negate = (text) => (text[0] === "-" ? text.slice(1) : `-${text}`);
+
+    // first number
+    if (
+        gFirstInputText !== "" &&
+        gOperationInputText === "" &&
+        gSecondInputText === ""
+    ) {
+        gFirstInputText = negate(gFirstInputText);
+        gDisplayText = gFirstInputText;
+        updateDisplay();
+        // second number
+    } else if (
+        gFirstInputText !== "" &&
+        gOperationInputText !== "" &&
+        gSecondInputText !== ""
+    ) {
+        gSecondInputText = negate(gSecondInputText);
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        updateDisplay();
+        // result
+    } else if (gFirstInputText === "" && gLastResult !== "") {
+        gLastResult = negate(gLastResult);
+        gDisplayText = gLastResult;
+        updateDisplay();
+    }
+}
+```
