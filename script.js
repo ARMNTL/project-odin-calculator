@@ -17,14 +17,35 @@ buttons.forEach((button) =>
 );
 
 function inputNumber(buttonTextContext) {
-    // get the first number
+    // get the first number if no operand
     if (gOperationInputText === "") {
-        gFirstInputText += buttonTextContext;
+        // period / dot logic
+        if (buttonTextContext === ".") {
+            if (gFirstInputText === "") {
+                gFirstInputText += "0.";
+            } else if (!gFirstInputText.includes(".")) {
+                gFirstInputText += ".";
+            }
+            gDisplayText += gFirstInputText;
+            // non-period
+        } else {
+            gFirstInputText += buttonTextContext;
+        }
         gDisplayText = gFirstInputText;
-        // get the second number
-    } else if (gOperationInputText !== "") {
-        gSecondInputText += buttonTextContext;
-        gDisplayText += buttonTextContext;
+        // get the second number if there's an operand
+    } else {
+        // period / dot logic
+        if (buttonTextContext === ".") {
+            if (gSecondInputText === "") {
+                gSecondInputText += "0.";
+            } else if (!gSecondInputText.includes(".")) {
+                gSecondInputText += ".";
+            }
+            // non-period
+        } else {
+            gSecondInputText += buttonTextContext;
+        }
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
     }
     updateDisplay();
 }
@@ -142,7 +163,6 @@ function backSpace() {
 
 function operate() {
     if (!gFirstInputText || !gOperationInputText || !gSecondInputText) {
-        // console.log("Not possible");
         return;
     }
 
@@ -195,6 +215,7 @@ function handleAllButtonsClick(e) {
         case "7":
         case "8":
         case "9":
+        case ".":
             // console.log(`${e.target.textContent} clicked`);
             inputNumber(e.target.textContent);
             break;

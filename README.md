@@ -476,3 +476,41 @@ function backSpace() {
     }
 }
 ```
+
+18. Let's work on the period / dot button. I updated inputNumber function.
+
+```js
+function inputNumber(buttonTextContext) {
+    // get the first number if no operand
+    if (gOperationInputText === "") {
+        // period / dot logic
+        if (buttonTextContext === ".") {
+            if (gFirstInputText === "") {
+                gFirstInputText += "0.";
+            } else if (!gFirstInputText.includes(".")) {
+                gFirstInputText += ".";
+            }
+            gDisplayText += gFirstInputText;
+            // non-period
+        } else {
+            gFirstInputText += buttonTextContext;
+        }
+        gDisplayText = gFirstInputText;
+        // get the second number if there's an operand
+    } else {
+        // period / dot logic
+        if (buttonTextContext === ".") {
+            if (gSecondInputText === "") {
+                gSecondInputText += "0.";
+            } else if (!gSecondInputText.includes(".")) {
+                gSecondInputText += ".";
+            }
+            // non-period
+        } else {
+            gSecondInputText += buttonTextContext;
+        }
+        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+    }
+    updateDisplay();
+}
+```
