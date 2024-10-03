@@ -3,6 +3,7 @@ let gDisplayText = "";
 let gFirstInputText = "";
 let gSecondInputText = "";
 let gOperationInputText = "";
+let gLastResult = "";
 
 // display
 const display = document.querySelector(".display");
@@ -16,20 +17,33 @@ buttons.forEach((button) =>
 );
 
 function processNumbersButtonClick(buttonTextContext) {
+    // get the first number
     if (gOperationInputText === "") {
         gFirstInputText += buttonTextContext;
         gDisplayText = gFirstInputText;
+        // get the second number
     } else if (gOperationInputText !== "") {
         gSecondInputText += buttonTextContext;
         gDisplayText += buttonTextContext;
     }
-
     updateDisplay();
 }
 
 function processOperationButtonClick(buttonTextContext) {
+    // right after =
+    if (gLastResult !== "") {
+        gFirstInputText = gLastResult;
+    }
+
+    // starting with operation
     if (gFirstInputText === "") {
         return;
+    }
+
+    // clicking an operation instead of =
+    if (gFirstInputText !== "" && gSecondInputText !== "") {
+        processComputeButtonClick();
+        gFirstInputText = gLastResult;
     }
 
     gOperationInputText = buttonTextContext;
@@ -38,7 +52,22 @@ function processOperationButtonClick(buttonTextContext) {
 }
 
 function updateDisplay() {
+    console.log(
+        gFirstInputText,
+        gOperationInputText,
+        gSecondInputText,
+        gLastResult
+    );
     display.textContent = gDisplayText;
+}
+
+function clearAll() {
+    gFirstInputText = "";
+    gSecondInputText = "";
+    gOperationInputText = "";
+    gLastResult = "";
+    gDisplayText = "";
+    display.textContent = "0";
 }
 
 function processComputeButtonClick() {
@@ -53,24 +82,33 @@ function processComputeButtonClick() {
 
     switch (gOperationInputText) {
         case "+":
-            gDisplayText = (a + b).toString();
+            gLastResult = (a + b).toString();
+            gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "–":
-            gDisplayText = (a - b).toString();
+            gLastResult = (a - b).toString();
+            gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "×":
-            gDisplayText = (a * b).toString();
+            gLastResult = (a * b).toString();
+            gDisplayText = gLastResult;
             updateDisplay();
             break;
         case "÷":
-            gDisplayText = (a / b).toString();
+            gLastResult = (a / b).toString();
+            gDisplayText = gLastResult;
             updateDisplay();
             break;
         default:
             break;
     }
+
+    gFirstInputText = "";
+    gSecondInputText = "";
+    gOperationInputText = "";
+    gDisplayText = "";
 }
 
 function handleAllButtonsClick(e) {
@@ -99,6 +137,9 @@ function handleAllButtonsClick(e) {
             break;
         case "=":
             processComputeButtonClick();
+            break;
+        case "C":
+            clearAll();
             break;
         default:
             break;

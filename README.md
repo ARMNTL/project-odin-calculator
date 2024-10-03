@@ -329,3 +329,72 @@ function processComputeButtonClick() {
     }
 }
 ```
+
+11. Right now, it works only the first time. If we try a second calculation, it gets weird. Let's fix it!
+
+```js
+function processComputeButtonClick() {
+    ...
+    gFirstInputText = "";
+    gSecondInputText = "";
+    gOperationInputText = "";
+    gDisplayText = "";
+}
+```
+
+12. Another thing that other calculator allows you to do, is that you can use the result to do additional operations. Clicking an operation right after clicking the equals button.
+
+```js
+function processOperationButtonClick(buttonTextContext) {
+    if (gLastResult !== "") {
+        gFirstInputText = gLastResult;
+    }
+
+    if (gFirstInputText === "") {
+        return;
+    }
+
+    gOperationInputText = buttonTextContext;
+    gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+    updateDisplay();
+}
+```
+
+13. Also, be able to chain operations, for example, 1 + 1 + 2 + 3 = 7.
+
+```js
+function processOperationButtonClick(buttonTextContext) {
+    // right after =
+    if (gLastResult !== "") {
+        gFirstInputText = gLastResult;
+    }
+
+    // starting with operation
+    if (gFirstInputText === "") {
+        return;
+    }
+
+    // clicking an operation instead of =
+    if (gFirstInputText !== "" && gSecondInputText !== "") {
+        processComputeButtonClick();
+        gFirstInputText = gLastResult;
+    }
+
+    gOperationInputText = buttonTextContext;
+    gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+    updateDisplay();
+}
+```
+
+14. I should have done C (clear) button earlier...
+
+```js
+function clearAll() {
+    gFirstInputText = "";
+    gSecondInputText = "";
+    gOperationInputText = "";
+    gLastResult = "";
+    gDisplayText = "";
+    display.textContent = "0";
+}
+```
