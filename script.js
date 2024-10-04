@@ -18,24 +18,27 @@ buttons.forEach((button) =>
     button.addEventListener("click", handleAllButtonsClick)
 );
 
+function formatNumber(text) {
+    let decimals = "";
+
+    if (text.includes(".")) {
+        const splitted = text.split(".");
+        text = splitted[0];
+        decimals = "." + splitted[1];
+    }
+
+    const numberOfCommas = parseInt((text.length - 1) / 3);
+    let threeDigits = [];
+
+    for (let i = 1; i <= numberOfCommas; i++) {
+        threeDigits.unshift("," + text.slice(-3));
+        text = text.slice(0, -3);
+    }
+
+    return `${text}${threeDigits.join("")}${decimals === "" ? "" : decimals}`;
+}
+
 function updateDisplay() {
-    console.log(
-        gFirstInputText,
-        gOperationInputText,
-        gSecondInputText,
-        gLastResult
-    );
-
-    // if (gFirstInputText.includes(".")) {
-    //     let splitted = gFirstInputText.split(".");
-    //     console.log(splitted);
-    //     if (splitted[1].length >= 2) {
-    //         splitted[1] = splitted[1].slice(0, 2);
-    //         gFirstInputText = splitted.join(".");
-    //         gDisplayText = gFirstInputText;
-    //     }
-    // }
-
     display.textContent = gDisplayText;
 }
 
@@ -60,7 +63,7 @@ function inputNumber(buttonTextContext) {
                 gFirstInputText += buttonTextContext;
             }
         }
-        gDisplayText = gFirstInputText;
+        gDisplayText = formatNumber(gFirstInputText);
         // get the second number if there's an operand
     } else {
         // period / dot logic
@@ -81,7 +84,9 @@ function inputNumber(buttonTextContext) {
                 gSecondInputText += buttonTextContext;
             }
         }
-        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        gDisplayText = `${formatNumber(
+            gFirstInputText
+        )} ${gOperationInputText} ${formatNumber(gSecondInputText)}`;
     }
     updateDisplay();
 }
@@ -110,7 +115,7 @@ function inputOperation(buttonTextContext) {
     }
 
     gOperationInputText = buttonTextContext;
-    gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+    gDisplayText = `${formatNumber(gFirstInputText)} ${gOperationInputText} `;
     updateDisplay();
 }
 
@@ -128,7 +133,9 @@ function clearAll() {
 function clearEntry() {
     if (gOperationInputText !== "") {
         gSecondInputText = "";
-        gDisplayText = `${gFirstInputText} ${gOperationInputText} `;
+        gDisplayText = `${formatNumber(
+            gFirstInputText
+        )} ${gOperationInputText} `;
         updateDisplay();
     } else {
         clearAll();
@@ -145,7 +152,7 @@ function negateNumber() {
         gSecondInputText === ""
     ) {
         gFirstInputText = negate(gFirstInputText);
-        gDisplayText = gFirstInputText;
+        gDisplayText = formatNumber(gFirstInputText);
         updateDisplay();
         // second number
     } else if (
@@ -154,7 +161,9 @@ function negateNumber() {
         gSecondInputText !== ""
     ) {
         gSecondInputText = negate(gSecondInputText);
-        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        gDisplayText = `${formatNumber(
+            gFirstInputText
+        )} ${gOperationInputText} ${formatNumber(gSecondInputText)}`;
         updateDisplay();
         // result
     } else if (gFirstInputText === "" && gLastResult !== "") {
@@ -171,7 +180,8 @@ function backSpace() {
         gSecondInputText === ""
     ) {
         gFirstInputText = gFirstInputText.slice(0, -1);
-        gDisplayText = gFirstInputText === "" ? "0" : gFirstInputText;
+        gDisplayText =
+            gFirstInputText === "" ? "0" : formatNumber(gFirstInputText);
         updateDisplay();
         // second number
     } else if (
@@ -180,12 +190,14 @@ function backSpace() {
         gSecondInputText !== ""
     ) {
         gSecondInputText = gSecondInputText.slice(0, -1);
-        gDisplayText = `${gFirstInputText} ${gOperationInputText} ${gSecondInputText}`;
+        gDisplayText = `${formatNumber(
+            gFirstInputText
+        )} ${gOperationInputText} ${formatNumber(gSecondInputText)}`;
         updateDisplay();
         // result
     } else if (gFirstInputText === "" && gLastResult !== "") {
         gLastResult = gLastResult.slice(0, -1);
-        gDisplayText = gLastResult === "" ? "0" : gLastResult;
+        gDisplayText = gLastResult === "" ? "0" : formatNumber(gLastResult);
         updateDisplay();
     }
 }
@@ -220,17 +232,17 @@ function operate() {
     switch (gOperationInputText) {
         case "+":
             gLastResult = trimTrailingZeros((a + b).toFixed(2).toString());
-            gDisplayText = gLastResult;
+            gDisplayText = formatNumber(gLastResult);
             updateDisplay();
             break;
         case "–":
             gLastResult = trimTrailingZeros((a - b).toFixed(2).toString());
-            gDisplayText = gLastResult;
+            gDisplayText = formatNumber(gLastResult);
             updateDisplay();
             break;
         case "×":
             gLastResult = trimTrailingZeros((a * b).toFixed(2).toString());
-            gDisplayText = gLastResult;
+            gDisplayText = formatNumber(gLastResult);
             updateDisplay();
             break;
         case "÷":
@@ -238,7 +250,7 @@ function operate() {
                 gDisplayText = "error / 0";
             } else {
                 gLastResult = trimTrailingZeros((a / b).toFixed(2).toString());
-                gDisplayText = gLastResult;
+                gDisplayText = formatNumber(gLastResult);
             }
             updateDisplay();
             break;
@@ -255,7 +267,6 @@ function operate() {
 }
 
 function handleAllButtonsClick(e) {
-    // console.log(`${e.target.textContent} got clicked!`);
     switch (e.target.textContent) {
         case "0":
             if (display.textContent === "0") break;
@@ -269,14 +280,12 @@ function handleAllButtonsClick(e) {
         case "8":
         case "9":
         case ".":
-            // console.log(`${e.target.textContent} clicked`);
             inputNumber(e.target.textContent);
             break;
         case "+":
         case "–":
         case "×":
         case "÷":
-            // console.log(`${e.target.textContent} clicked`);
             inputOperation(e.target.textContent);
             break;
         case "=":
